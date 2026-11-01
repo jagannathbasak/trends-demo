@@ -9,15 +9,15 @@ import androidx.compose.runtime.CompositionLocalProvider
 
 private val scheme = darkColorScheme(
     primary = Nv.Mint,
-    onPrimary = Nv.OnMint,
-    secondary = Nv.Amber,
-    background = Nv.Ink,
+    onPrimary = Nv.OnLight,
+    secondary = Nv.Cyan,
+    background = Nv.Black,
     onBackground = Nv.Text,
-    surface = Nv.Ink2,
+    surface = Nv.Raised,
     onSurface = Nv.Text,
-    surfaceVariant = Nv.Ink3,
+    surfaceVariant = Nv.Raised2,
     onSurfaceVariant = Nv.Text2,
-    outline = Nv.HairlineStrong,
+    outline = Nv.Separator,
 )
 
 @Composable

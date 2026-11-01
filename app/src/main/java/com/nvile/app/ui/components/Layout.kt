@@ -3,7 +3,6 @@ package com.nvile.app.ui.components
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -13,6 +12,7 @@ import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
@@ -20,6 +20,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
@@ -46,187 +47,216 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.selected
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.nvile.app.ui.theme.Nv
 import com.nvile.app.ui.theme.NvMotion
 import com.nvile.app.ui.theme.NvType
 
-/** Space reserved at the bottom of scrolling content so the floating tab bar never covers it. */
-val TabBarClearance = 118.dp
+val TabBarClearance = 120.dp
 
 /**
- * Scrolling screen with an iOS-style large title. As the title scrolls away a compact,
- * frosted bar fades in carrying the same title.
+ * A scrolling page with an iOS large title that hands off to a compact centred title
+ * as it scrolls away. Optional [mood] paints an atmosphere behind the page.
  */
 @Composable
-fun NvScreen(
-    title: String,
+fun Page(
+    title: String?,
     modifier: Modifier = Modifier,
-    eyebrow: String? = null,
+    mood: Mood? = null,
+    kicker: String? = null,
     onBack: (() -> Unit)? = null,
-    actions: @Composable () -> Unit = {},
+    actions: @Composable RowScope.() -> Unit = {},
     scroll: ScrollState = rememberScrollState(),
-    showLargeTitle: Boolean = true,
-    bottomClearance: androidx.compose.ui.unit.Dp = TabBarClearance,
+    horizontalPadding: Dp = 20.dp,
     content: @Composable ColumnScope.() -> Unit,
 ) {
     val density = LocalDensity.current
-    val threshold = with(density) { 64.dp.toPx() }
-    val compact = (scroll.value / threshold).coerceIn(0f, 1f)
-    val statusTop = WindowInsets.statusBars.asPaddingValues().calculateTopPadding()
+    val k = (scroll.value / with(density) { 70.dp.toPx() }).coerceIn(0f, 1f)
+    val top = WindowInsets.statusBars.asPaddingValues().calculateTopPadding()
+    val bottom = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
 
     Box(modifier.fillMaxSize()) {
+        if (mood != null) Atmosphere(mood, Modifier.graphicsLayer { translationY = -scroll.value * 0.35f })
         Column(
             Modifier
                 .fillMaxSize()
                 .verticalScroll(scroll)
-                .padding(top = statusTop + 56.dp)
-                .padding(horizontal = 20.dp),
+                .padding(top = top + 52.dp),
         ) {
-            if (showLargeTitle) {
-                Column(Modifier.graphicsLayer { alpha = 1f - compact; translationY = -compact * 12.dp.toPx() }) {
-                    if (eyebrow != null) {
-                        Eyebrow(eyebrow)
-                        Spacer(Modifier.height(8.dp))
+            if (title != null) {
+                Column(
+                    Modifier
+                        .padding(horizontal = 20.dp)
+                        .graphicsLayer { alpha = 1f - k; translationY = -k * 10.dp.toPx() },
+                ) {
+                    if (kicker != null) {
+                        Text(kicker, style = NvType.Caption.copy(color = Nv.Text2))
+                        Spacer(Modifier.height(4.dp))
                     }
                     Text(title, style = NvType.LargeTitle)
                 }
-                Spacer(Modifier.height(22.dp))
+                Spacer(Modifier.height(20.dp))
             }
-            content()
-            Spacer(Modifier.height(bottomClearance + WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()))
+            Column(Modifier.padding(horizontal = horizontalPadding), content = content)
+            Spacer(Modifier.height(TabBarClearance + bottom))
         }
 
         // Compact bar
         Box(
             Modifier
                 .fillMaxWidth()
-                .background(
-                    Brush.verticalGradient(
-                        listOf(Nv.Ink.copy(alpha = 0.94f * compact + 0.0f), Nv.Ink.copy(alpha = 0.78f * compact)),
-                    ),
-                )
-                .padding(top = statusTop),
+                .background(Brush.verticalGradient(listOf(Nv.Black.copy(alpha = 0.92f * k), Nv.Black.copy(alpha = 0.7f * k))))
+                .padding(top = top),
         ) {
-            Row(
-                Modifier.fillMaxWidth().height(56.dp).padding(horizontal = 12.dp),
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                if (onBack != null) {
-                    GlassIconButton(onClick = onBack, size = 40.dp, modifier = Modifier.semantics { contentDescription = "Back" }) {
-                        NvIcon(NvIcons.Back, Nv.Text, size = 20.dp)
-                    }
-                } else {
-                    Spacer(Modifier.width(8.dp))
+            Row(Modifier.fillMaxWidth().height(52.dp).padding(horizontal = 14.dp), verticalAlignment = Alignment.CenterVertically) {
+                Box(Modifier.width(88.dp)) {
+                    if (onBack != null) RoundButton(NvIcons.Back, "Back", onBack, size = 40.dp)
                 }
-                val showTitle = if (showLargeTitle) compact else 1f
                 Text(
-                    title,
+                    title.orEmpty(),
                     style = NvType.Headline,
+                    textAlign = TextAlign.Center,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
-                    modifier = Modifier
-                        .weight(1f)
-                        .padding(horizontal = 12.dp)
-                        .graphicsLayer { alpha = showTitle; translationY = (1f - showTitle) * 8.dp.toPx() },
+                    modifier = Modifier.weight(1f).graphicsLayer { alpha = k },
                 )
-                actions()
+                Row(Modifier.width(88.dp), horizontalArrangement = Arrangement.End, verticalAlignment = Alignment.CenterVertically, content = actions)
             }
-            Box(
-                Modifier
-                    .align(Alignment.BottomCenter)
-                    .fillMaxWidth()
-                    .height(1.dp)
-                    .background(Nv.white(0.06f * compact)),
-            )
+            Hairline(Modifier.align(Alignment.BottomCenter).graphicsLayer { alpha = k })
+        }
+    }
+}
+
+/* ================================================================ grouped list */
+
+private val GroupShape = RoundedCornerShape(24.dp)
+
+/** Apple-style inset group: rounded container, hairline separators between rows. */
+@Composable
+fun Group(modifier: Modifier = Modifier, header: String? = null, footer: String? = null, content: @Composable ColumnScope.() -> Unit) {
+    Column(modifier.fillMaxWidth()) {
+        if (header != null) {
+            Text(header, style = NvType.Caption.copy(color = Nv.Text2), modifier = Modifier.padding(start = 18.dp, bottom = 8.dp))
+        }
+        Column(Modifier.fillMaxWidth().clip(GroupShape).background(Nv.Raised2), content = content)
+        if (footer != null) {
+            Text(footer, style = NvType.Caption.copy(color = Nv.Text3), modifier = Modifier.padding(start = 18.dp, end = 18.dp, top = 8.dp))
         }
     }
 }
 
 @Composable
-fun SectionHeader(title: String, modifier: Modifier = Modifier, trailing: String? = null) {
-    Row(modifier.fillMaxWidth().padding(top = 8.dp, bottom = 12.dp), verticalAlignment = Alignment.Bottom) {
-        Text(title, style = NvType.Title2, modifier = Modifier.weight(1f))
-        if (trailing != null) Eyebrow(trailing)
+fun GroupRow(
+    title: String,
+    modifier: Modifier = Modifier,
+    subtitle: String? = null,
+    icon: ImageVector? = null,
+    iconTint: Color = Nv.Text,
+    showDivider: Boolean = false,
+    onClick: (() -> Unit)? = null,
+    trailing: @Composable () -> Unit = { if (onClick != null) NvIcon(NvIcons.Chevron, Nv.Text3, size = 16.dp) },
+) {
+    Column {
+        if (showDivider) Hairline(Modifier.padding(start = if (icon != null) 60.dp else 18.dp))
+        Row(
+            modifier
+                .fillMaxWidth()
+                .then(if (onClick != null) Modifier.tappable(pressedScale = 0.985f, onClick = onClick) else Modifier)
+                .heightIn(min = 58.dp)
+                .padding(horizontal = 18.dp, vertical = 12.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            if (icon != null) {
+                Box(Modifier.size(30.dp).clip(RoundedCornerShape(9.dp)).background(iconTint.copy(alpha = 0.16f)), contentAlignment = Alignment.Center) {
+                    NvIcon(icon, iconTint, size = 17.dp)
+                }
+                Spacer(Modifier.width(12.dp))
+            }
+            Column(Modifier.weight(1f)) {
+                Text(title, style = NvType.BodyStrong.copy(fontWeight = androidx.compose.ui.text.font.FontWeight.Normal))
+                if (subtitle != null) Text(subtitle, style = NvType.Callout.copy(color = Nv.Text3))
+            }
+            trailing()
+        }
+    }
+}
+
+/** Section title with an optional action on the right. */
+@Composable
+fun SectionTitle(title: String, modifier: Modifier = Modifier, action: String? = null, onAction: () -> Unit = {}) {
+    Row(modifier.fillMaxWidth().padding(bottom = 14.dp), verticalAlignment = Alignment.Bottom) {
+        Text(title, style = NvType.Title, modifier = Modifier.weight(1f))
+        if (action != null) Text(action, style = NvType.Callout.copy(color = Nv.Mint), modifier = Modifier.tappable(onClick = onAction))
     }
 }
 
 @Composable
-fun Gap(h: Int = 14) = Spacer(Modifier.height(h.dp))
+fun Gap(h: Int = 16) = Spacer(Modifier.height(h.dp))
 
-/* ----------------------------------------------------------- Tab bar */
+/* ================================================================ tab bar */
 
-data class TabItem(val route: String, val label: String, val icon: ImageVector)
+data class TabItem(val route: String, val label: String, val icon: ImageVector?)
 
 /**
- * Detached, floating glass tab bar. A luminous capsule slides between tabs on a spring.
+ * Floating glass capsule. Four icon tabs flank a live orb that opens Ask; a soft lens
+ * glides beneath the active tab.
  */
 @Composable
-fun FloatingTabBar(
-    items: List<TabItem>,
-    selected: Int,
-    onSelect: (Int) -> Unit,
-    modifier: Modifier = Modifier,
-) {
+fun TabBar(items: List<TabItem>, selected: Int, onSelect: (Int) -> Unit, modifier: Modifier = Modifier) {
     val haptics = rememberHaptics()
     Box(
         modifier
             .fillMaxWidth()
             .windowInsetsPadding(WindowInsets.navigationBars)
-            .padding(horizontal = 18.dp, vertical = 10.dp),
+            .padding(horizontal = 22.dp, vertical = 10.dp),
     ) {
         BoxWithConstraints(
             Modifier
                 .fillMaxWidth()
-                .height(68.dp)
-                .shadow(28.dp, RoundedCornerShape(34.dp), ambientColor = Color.Black, spotColor = Color.Black)
-                .clip(RoundedCornerShape(34.dp))
-                .background(Nv.Ink2.copy(alpha = 0.92f))
-                .background(Brush.verticalGradient(listOf(Nv.white(0.09f), Nv.white(0.02f))))
-                .border(1.dp, Brush.verticalGradient(listOf(Nv.white(0.18f), Nv.white(0.05f))), RoundedCornerShape(34.dp))
-                .padding(6.dp),
+                .height(66.dp)
+                .shadow(30.dp, RoundedCornerShape(33.dp), ambientColor = Color.Black, spotColor = Color.Black)
+                .clip(RoundedCornerShape(33.dp))
+                .background(Color(0xE61A1A1F))
+                .border(0.5.dp, Brush.verticalGradient(listOf(Nv.white(0.22f), Nv.white(0.04f))), RoundedCornerShape(33.dp))
+                .padding(5.dp),
         ) {
             val slot = maxWidth / items.size
-            val x by animateDpAsState(slot * selected.coerceAtLeast(0), NvMotion.settle(), label = "tab")
-            val capsuleAlpha by animateFloatAsState(if (selected >= 0) 1f else 0f, label = "capsule")
+            val lensX by animateDpAsState(slot * selected.coerceAtLeast(0), NvMotion.settle(), label = "lens")
+            val lensA by animateFloatAsState(if (selected >= 0 && items[selected].icon != null) 1f else 0f, label = "lensA")
             Box(
                 Modifier
-                    .offset(x = x)
+                    .offset(x = lensX)
                     .width(slot)
                     .fillMaxHeight()
-                    .graphicsLayer { alpha = capsuleAlpha }
+                    .graphicsLayer { alpha = lensA }
                     .clip(RoundedCornerShape(28.dp))
-                    .background(Brush.verticalGradient(listOf(Nv.mint(0.2f), Nv.mint(0.08f))))
-                    .border(1.dp, Nv.mint(0.28f), RoundedCornerShape(28.dp)),
+                    .background(Nv.white(0.12f)),
             )
             Row(Modifier.fillMaxSize()) {
                 items.forEachIndexed { i, item ->
                     val on = i == selected
-                    val tint by animateColorAsState(if (on) Nv.Mint else Nv.Text3, tween(220), label = "tint")
-                    val lift by animateFloatAsState(if (on) 1f else 0f, NvMotion.press(), label = "lift")
-                    Column(
+                    Box(
                         Modifier
                             .weight(1f)
                             .fillMaxHeight()
-                            .semantics { this.selected = on }
-                            .tappable(pressedScale = 0.86f, role = Role.Tab) {
-                                if (!on) haptics.tick()
-                                onSelect(i)
-                            },
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.Center,
+                            .semantics { this.selected = on; contentDescription = item.label }
+                            .tappable(pressedScale = 0.86f, role = Role.Tab, haptic = false) { haptics.tick(); onSelect(i) },
+                        contentAlignment = Alignment.Center,
                     ) {
-                        NvIcon(
-                            item.icon, tint, size = 22.dp,
-                            modifier = Modifier.graphicsLayer {
-                                val s = 1f + 0.08f * lift
-                                scaleX = s; scaleY = s
-                                translationY = -1.5.dp.toPx() * lift
-                            },
-                        )
-                        Spacer(Modifier.height(3.dp))
-                        Text(item.label, style = NvType.TabLabel, color = tint)
+                        if (item.icon == null) {
+                            Orb(Modifier.size(58.dp), mood = if (on) OrbMood.Thinking else OrbMood.Prediction, energy = if (on) 0.6f else 0.15f)
+                        } else {
+                            val tint by animateColorAsState(if (on) Nv.Text else Nv.Text3, label = "tint")
+                            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                                NvIcon(item.icon, tint, size = 23.dp)
+                                Spacer(Modifier.height(2.dp))
+                                Text(item.label, style = NvType.Caption.copy(fontSize = 10.sp), color = tint)
+                            }
+                        }
                     }
                 }
             }
@@ -234,17 +264,20 @@ fun FloatingTabBar(
     }
 }
 
-/** Ordered numeral badge used by the Decision Center and report parts. */
+/** Large rounded surface used for hero cards. */
 @Composable
-fun NumberBadge(n: Int, active: Boolean = false) {
-    Box(
-        Modifier
-            .size(30.dp)
-            .clip(RoundedCornerShape(10.dp))
-            .background(if (active) Nv.Mint else Nv.white(0.06f))
-            .border(1.dp, if (active) Nv.Mint else Nv.Hairline, RoundedCornerShape(10.dp)),
-        contentAlignment = Alignment.Center,
-    ) {
-        Text(n.toString().padStart(2, '0'), style = NvType.MonoTag.copy(fontSize = NvType.Mono.fontSize), color = if (active) Nv.OnMint else Nv.Text2)
-    }
+fun Panel(
+    modifier: Modifier = Modifier,
+    color: Color = Nv.Raised2,
+    radius: Dp = 28.dp,
+    onClick: (() -> Unit)? = null,
+    content: @Composable ColumnScope.() -> Unit,
+) {
+    Column(
+        modifier
+            .then(if (onClick != null) Modifier.tappable(pressedScale = 0.975f, onClick = onClick) else Modifier)
+            .clip(RoundedCornerShape(radius))
+            .background(color),
+        content = content,
+    )
 }

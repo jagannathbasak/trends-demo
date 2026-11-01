@@ -1,6 +1,7 @@
 package com.nvile.app
 
 import android.app.Application
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
@@ -12,24 +13,22 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.takahirom.roborazzi.captureRoboImage
 import com.nvile.app.data.Role
+import com.nvile.app.ui.AppTabs
 import com.nvile.app.ui.NvileViewModel
-import com.nvile.app.ui.components.AuroraBackground
-import com.nvile.app.ui.components.FloatingTabBar
-import com.nvile.app.ui.components.NvIcons
-import com.nvile.app.ui.components.TabItem
+import com.nvile.app.ui.components.TabBar
 import com.nvile.app.ui.screens.AlertsScreen
 import com.nvile.app.ui.screens.AskScreen
 import com.nvile.app.ui.screens.DecisionScreen
-import com.nvile.app.ui.screens.DriversScreen
 import com.nvile.app.ui.screens.IdeaResultScreen
+import com.nvile.app.ui.screens.IdeasScreen
 import com.nvile.app.ui.screens.MarketScreen
+import com.nvile.app.ui.screens.MarketsScreen
 import com.nvile.app.ui.screens.OnboardingScreen
 import com.nvile.app.ui.screens.ProfileScreen
-import com.nvile.app.ui.screens.ScoreIdeaScreen
-import com.nvile.app.ui.screens.SignalsScreen
-import com.nvile.app.ui.screens.TodayScreen
+import com.nvile.app.ui.screens.PulseScreen
 import com.nvile.app.ui.screens.TrackRecordScreen
 import com.nvile.app.ui.screens.WelcomeScreen
+import com.nvile.app.ui.theme.Nv
 import com.nvile.app.ui.theme.NvileTheme
 import org.junit.Rule
 import org.junit.Test
@@ -39,56 +38,51 @@ import org.robolectric.annotation.GraphicsMode
 
 /**
  * Renders every screen on the JVM and writes PNGs to app/build/screenshots, so the design
- * can be reviewed from CI without a device.
+ * can be reviewed from CI without a device. Phone-sized frames show the first viewport;
+ * the tall frames show whole scrolling pages.
  */
 @RunWith(AndroidJUnit4::class)
 @GraphicsMode(GraphicsMode.Mode.NATIVE)
-@Config(sdk = [34], qualifiers = "w393dp-h1500dp-xhdpi")
+@Config(sdk = [34], qualifiers = "w393dp-h852dp-xhdpi")
 class ScreenshotTest {
     @get:Rule val compose = createComposeRule()
 
     private val vm by lazy { NvileViewModel(ApplicationProvider.getApplicationContext<Application>()) }
 
-    private val tabs = listOf(
-        TabItem("today", "Today", NvIcons.Today),
-        TabItem("signals", "Signals", NvIcons.Signals),
-        TabItem("ask", "Ask", NvIcons.Ask),
-        TabItem("ideas", "Ideas", NvIcons.Ideas),
-        TabItem("you", "You", NvIcons.You),
-    )
-
-    private fun shot(name: String, tab: Int = -1, content: @Composable () -> Unit) {
+    private fun shot(name: String, tab: Int = -1, ms: Long = 6_000, content: @Composable () -> Unit) {
         compose.mainClock.autoAdvance = false
         compose.setContent {
             NvileTheme {
-                Box(Modifier.fillMaxSize()) {
-                    AuroraBackground()
+                Box(Modifier.fillMaxSize().background(Nv.Black)) {
                     content()
-                    if (tab >= 0) {
-                        Box(Modifier.align(Alignment.BottomCenter)) { FloatingTabBar(tabs, tab, {}) }
-                    }
+                    if (tab >= 0) Box(Modifier.align(Alignment.BottomCenter)) { TabBar(AppTabs, tab, {}) }
                 }
             }
         }
-        compose.mainClock.advanceTimeBy(6_000)
+        compose.mainClock.advanceTimeBy(ms)
         compose.onRoot().captureRoboImage("build/screenshots/$name.png")
     }
 
     @Test fun s01_welcome() = shot("01-welcome") { WelcomeScreen({}, {}) }
     @Test fun s02_onboarding() = shot("02-onboarding") { OnboardingScreen(vm, { _: Role, _: Set<String> -> }, {}) }
-    @Test fun s03_today() = shot("03-today", 0) { TodayScreen(vm, {}, {}, {}, {}, {}) }
-    @Test fun s04_signals() = shot("04-signals", 1) { SignalsScreen(vm) {} }
-    @Test fun s05_market() = shot("05-market", 1) { MarketScreen(vm, "ai-workflow", {}, {}, {}) }
-    @Test fun s06_drivers() = shot("06-drivers", 1) { DriversScreen(vm, "ai-workflow") {} }
-    @Test fun s07_decision() = shot("07-decision", 1) { DecisionScreen(vm, "ai-workflow") {} }
-    @Test fun s08_ask() = shot("08-ask", 2) { AskScreen(vm) {} }
-    @Test fun s10_score_idea() = shot("10-score-idea", 3) { ScoreIdeaScreen(vm) {} }
-    @Test fun s11_idea_result() {
+    @Test fun s03_pulse() = shot("03-pulse", 0) { PulseScreen(vm, {}, {}, {}, {}) }
+    @Test fun s04_markets() = shot("04-markets", 1) { MarketsScreen(vm) {} }
+    @Test fun s05_market() = shot("05-market", 1) { MarketScreen(vm, "ai-workflow", {}, {}) }
+    @Test fun s06_decision() = shot("06-decision", ms = 1_500) { DecisionScreen(vm, "ai-workflow") {} }
+    @Test fun s07_ask() = shot("07-ask", 2) { AskScreen(vm, {}, {}) }
+    @Test fun s08_ideas() = shot("08-ideas", 3) { IdeasScreen(vm) {} }
+    @Test fun s09_idea_result() {
         vm.scoreIdea()
-        shot("11-idea-result", 3) { IdeaResultScreen(vm, {}, {}) }
+        shot("09-idea-result", 3) { IdeaResultScreen(vm, {}, {}) }
     }
-    @Test fun s12_alerts() = shot("12-alerts", 0) { AlertsScreen(vm, {}, {}, {}, {}) }
-    @Test fun s13_track_record() = shot("13-track-record", 4) { TrackRecordScreen(vm) {} }
-    @Test fun s14_profile() = shot("14-profile", 4) { ProfileScreen(vm, {}, {}, {}) }
-    @Test fun s15_market_caution() = shot("15-market-clinical", 1) { MarketScreen(vm, "clinical-ai", {}, {}, {}) }
+    @Test fun s10_alerts() = shot("10-alerts", 0) { AlertsScreen(vm, {}, {}, {}) }
+    @Test fun s11_track_record() = shot("11-track-record", 4) { TrackRecordScreen(vm) {} }
+    @Test fun s12_you() = shot("12-you", 4) { ProfileScreen(vm, {}, {}, {}) }
+    @Test fun s13_market_clinical() = shot("13-market-clinical", 1) { MarketScreen(vm, "clinical-ai", {}, {}) }
+
+    @Config(qualifiers = "w393dp-h2400dp-xhdpi")
+    @Test fun t01_market_full() = shot("t01-market-full", 1) { MarketScreen(vm, "ai-workflow", {}, {}) }
+
+    @Config(qualifiers = "w393dp-h1700dp-xhdpi")
+    @Test fun t02_pulse_full() = shot("t02-pulse-full", 0) { PulseScreen(vm, {}, {}, {}, {}) }
 }

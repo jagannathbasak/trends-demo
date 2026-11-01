@@ -23,7 +23,7 @@ jobs:
         run: ./gradlew --no-daemon testDebugUnitTest --tests "com.nvile.app.ScreenshotTest"
       - name: Downscale for the repository
         run: |
-          mkdir -p docs/screenshots
+          rm -rf docs/screenshots && mkdir -p docs/screenshots
           python3 -m pip install --quiet pillow
           python3 - <<'PY'
           import glob, os
@@ -38,7 +38,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add docs/screenshots
+          git add -A docs/screenshots
           git diff --cached --quiet && exit 0
           git commit -m "Update screenshots"
           git push

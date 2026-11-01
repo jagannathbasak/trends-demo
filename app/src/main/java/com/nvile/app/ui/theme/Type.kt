@@ -4,6 +4,7 @@ import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontVariation
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.em
@@ -17,44 +18,39 @@ private fun variable(res: Int, weight: Int) = Font(
     variationSettings = FontVariation.Settings(FontVariation.weight(weight)),
 )
 
-/** Space Grotesk: display and numerals. */
-val Display = FontFamily(
-    variable(R.font.space_grotesk, 400),
-    variable(R.font.space_grotesk, 500),
-    variable(R.font.space_grotesk, 600),
-    variable(R.font.space_grotesk, 700),
-)
+/** Geist: the voice of the interface, from hairline numerals to bold headings. */
+val Geist = FontFamily((100..800 step 100).map { variable(R.font.geist, it) })
 
-/** Instrument Sans: reading text and controls. */
-val Sans = FontFamily(
-    variable(R.font.instrument_sans, 400),
-    variable(R.font.instrument_sans, 500),
-    variable(R.font.instrument_sans, 600),
-)
+/** Geist Mono: data, timestamps and evidence marks. */
+val GeistMono = FontFamily((300..600 step 100).map { variable(R.font.geist_mono, it) })
 
-/** IBM Plex Mono: labels, metadata, evidence marks. */
-val PlexMono = FontFamily(
-    Font(R.font.plex_mono_regular, FontWeight.Normal),
-    Font(R.font.plex_mono_medium, FontWeight.Medium),
+/** Instrument Serif: NVILE's verdicts, written like an editor would. */
+val Serif = FontFamily(
+    Font(R.font.instrument_serif, FontWeight.Normal),
+    Font(R.font.instrument_serif_italic, FontWeight.Normal, FontStyle.Italic),
 )
 
 object NvType {
-    val Hero = TextStyle(fontFamily = Display, fontWeight = FontWeight.SemiBold, fontSize = 46.sp, lineHeight = 46.sp, letterSpacing = (-0.035).em, color = Nv.Text)
-    val LargeTitle = TextStyle(fontFamily = Display, fontWeight = FontWeight.SemiBold, fontSize = 34.sp, lineHeight = 38.sp, letterSpacing = (-0.025).em, color = Nv.Text)
-    val Title = TextStyle(fontFamily = Display, fontWeight = FontWeight.SemiBold, fontSize = 28.sp, lineHeight = 31.sp, letterSpacing = (-0.02).em, color = Nv.Text)
-    val Title2 = TextStyle(fontFamily = Display, fontWeight = FontWeight.SemiBold, fontSize = 21.sp, lineHeight = 26.sp, letterSpacing = (-0.01).em, color = Nv.Text)
-    val Headline = TextStyle(fontFamily = Display, fontWeight = FontWeight.SemiBold, fontSize = 18.sp, lineHeight = 23.sp, color = Nv.Text)
-    val Number = TextStyle(fontFamily = Display, fontWeight = FontWeight.SemiBold, fontSize = 24.sp, lineHeight = 26.sp, letterSpacing = (-0.01).em, color = Nv.Text)
-    val BigNumber = TextStyle(fontFamily = Display, fontWeight = FontWeight.SemiBold, fontSize = 54.sp, lineHeight = 54.sp, letterSpacing = (-0.03).em, color = Nv.Mint)
+    /** Giant hairline numerals: the hero of every market. */
+    val Numeral = TextStyle(fontFamily = Geist, fontWeight = FontWeight.Thin, fontSize = 96.sp, lineHeight = 92.sp, letterSpacing = (-0.05).em, color = Nv.Text)
+    val NumeralM = TextStyle(fontFamily = Geist, fontWeight = FontWeight.ExtraLight, fontSize = 56.sp, lineHeight = 56.sp, letterSpacing = (-0.04).em, color = Nv.Text)
+    val NumeralS = TextStyle(fontFamily = Geist, fontWeight = FontWeight.Light, fontSize = 30.sp, lineHeight = 32.sp, letterSpacing = (-0.03).em, color = Nv.Text)
 
-    val Body = TextStyle(fontFamily = Sans, fontWeight = FontWeight.Normal, fontSize = 15.sp, lineHeight = 23.sp, color = Nv.Text2)
-    val BodyStrong = TextStyle(fontFamily = Sans, fontWeight = FontWeight.Medium, fontSize = 15.sp, lineHeight = 21.sp, color = Nv.Text)
-    val Lead = TextStyle(fontFamily = Sans, fontWeight = FontWeight.Normal, fontSize = 16.sp, lineHeight = 25.sp, color = Nv.Text2)
-    val Callout = TextStyle(fontFamily = Sans, fontWeight = FontWeight.Normal, fontSize = 13.sp, lineHeight = 19.sp, color = Nv.Text2)
-    val Button = TextStyle(fontFamily = Sans, fontWeight = FontWeight.SemiBold, fontSize = 16.sp, letterSpacing = 0.005.em)
-    val TabLabel = TextStyle(fontFamily = Sans, fontWeight = FontWeight.Medium, fontSize = 10.5.sp)
+    val Display = TextStyle(fontFamily = Geist, fontWeight = FontWeight.Light, fontSize = 46.sp, lineHeight = 48.sp, letterSpacing = (-0.045).em, color = Nv.Text)
+    val LargeTitle = TextStyle(fontFamily = Geist, fontWeight = FontWeight.SemiBold, fontSize = 34.sp, lineHeight = 40.sp, letterSpacing = (-0.03).em, color = Nv.Text)
+    val Title = TextStyle(fontFamily = Geist, fontWeight = FontWeight.SemiBold, fontSize = 24.sp, lineHeight = 29.sp, letterSpacing = (-0.025).em, color = Nv.Text)
+    val Headline = TextStyle(fontFamily = Geist, fontWeight = FontWeight.SemiBold, fontSize = 17.sp, lineHeight = 22.sp, letterSpacing = (-0.01).em, color = Nv.Text)
+    val Body = TextStyle(fontFamily = Geist, fontWeight = FontWeight.Normal, fontSize = 16.sp, lineHeight = 23.sp, letterSpacing = (-0.005).em, color = Nv.Text2)
+    val BodyStrong = TextStyle(fontFamily = Geist, fontWeight = FontWeight.Medium, fontSize = 16.sp, lineHeight = 22.sp, letterSpacing = (-0.01).em, color = Nv.Text)
+    val Callout = TextStyle(fontFamily = Geist, fontWeight = FontWeight.Normal, fontSize = 14.sp, lineHeight = 20.sp, color = Nv.Text2)
+    val Caption = TextStyle(fontFamily = Geist, fontWeight = FontWeight.Medium, fontSize = 12.sp, lineHeight = 16.sp, letterSpacing = 0.01.em, color = Nv.Text3)
+    val Button = TextStyle(fontFamily = Geist, fontWeight = FontWeight.SemiBold, fontSize = 17.sp, letterSpacing = (-0.01).em)
 
-    val Eyebrow = TextStyle(fontFamily = PlexMono, fontWeight = FontWeight.Medium, fontSize = 10.5.sp, letterSpacing = 0.12.em, color = Nv.Text3)
-    val Mono = TextStyle(fontFamily = PlexMono, fontWeight = FontWeight.Normal, fontSize = 12.sp, color = Nv.Text3)
-    val MonoTag = TextStyle(fontFamily = PlexMono, fontWeight = FontWeight.Medium, fontSize = 9.5.sp, letterSpacing = 0.1.em)
+    /** Serif verdict: the one sentence NVILE wants you to remember. */
+    val Verdict = TextStyle(fontFamily = Serif, fontStyle = FontStyle.Italic, fontSize = 38.sp, lineHeight = 42.sp, letterSpacing = (-0.01).em, color = Nv.Text)
+    val VerdictS = TextStyle(fontFamily = Serif, fontStyle = FontStyle.Italic, fontSize = 28.sp, lineHeight = 32.sp, color = Nv.Text)
+    val SerifDisplay = TextStyle(fontFamily = Serif, fontSize = 52.sp, lineHeight = 52.sp, letterSpacing = (-0.02).em, color = Nv.Text)
+
+    val Data = TextStyle(fontFamily = GeistMono, fontWeight = FontWeight.Normal, fontSize = 13.sp, color = Nv.Text2)
+    val Label = TextStyle(fontFamily = GeistMono, fontWeight = FontWeight.Medium, fontSize = 11.sp, letterSpacing = 0.08.em, color = Nv.Text3)
 }

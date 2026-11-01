@@ -1,41 +1,45 @@
 package com.nvile.app.ui.theme
 
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 
 /**
- * NVILE palette. Near-black ink grounds, a single luminous mint accent and an amber
- * caution tone, taken from the NVILE Mobile App design canvas.
+ * Observatory palette. True black, Apple-style label greys, and two light spectra:
+ * the prediction spectrum (mint, cyan, indigo) and the caution spectrum (amber, coral).
  */
 object Nv {
     // Grounds
-    val Ink = Color(0xFF030605)
-    val Ink1 = Color(0xFF070C0B)
-    val Ink2 = Color(0xFF0C1312)
-    val Ink3 = Color(0xFF131C1A)
+    val Black = Color(0xFF000000)
+    val Ink = Color(0xFF000000)
+    val Raised = Color(0xFF0C0C0F)
+    val Raised2 = Color(0xFF141418)
+    val Raised3 = Color(0xFF1C1C21)
+    val Separator = Color(0x1FFFFFFF)
 
-    // Glass layers (white over ink)
-    val Glass = Color(0x0FFFFFFF)
-    val GlassLow = Color(0x08FFFFFF)
-    val GlassHigh = Color(0x17FFFFFF)
-    val Hairline = Color(0x14FFFFFF)
-    val HairlineStrong = Color(0x29FFFFFF)
+    // Labels (iOS-style opacities on white)
+    val Text = Color(0xFFFFFFFF)
+    val Text2 = Color(0x99EBEBF5)
+    val Text3 = Color(0x5CEBEBF5)
+    val Text4 = Color(0x33EBEBF5)
 
-    // Text
-    val Text = Color(0xFFF2F6F5)
-    val Text2 = Color(0xFFA3ADAA)
-    val Text3 = Color(0xFF8C9794)
-    val Text4 = Color(0xFF5E6866)
+    // Prediction spectrum
+    val Mint = Color(0xFF3CF0C5)
+    val Cyan = Color(0xFF39C6FF)
+    val Indigo = Color(0xFF6D6BFF)
+    val Violet = Color(0xFFB26BFF)
 
-    // Accents
-    val Mint = Color(0xFF4FE3C1)
-    val MintBright = Color(0xFF8AF5DC)
-    val MintDeep = Color(0xFF02B08A)
-    val OnMint = Color(0xFF02110D)
-    val Amber = Color(0xFFE0A94F)
-    val AmberSoft = Color(0xFFC9B48C)
-    val Sky = Color(0xFF7AA7FF)
+    // Caution spectrum
+    val Amber = Color(0xFFFFB547)
+    val Coral = Color(0xFFFF6B5B)
 
-    fun mint(alpha: Float) = Mint.copy(alpha = alpha)
-    fun amber(alpha: Float) = Amber.copy(alpha = alpha)
-    fun white(alpha: Float) = Color.White.copy(alpha = alpha)
+    val OnLight = Color(0xFF000000)
+
+    fun white(a: Float) = Color.White.copy(alpha = a)
+    fun mint(a: Float) = Mint.copy(alpha = a)
+    fun amber(a: Float) = Amber.copy(alpha = a)
+
+    val Spectrum = listOf(Mint, Cyan, Indigo)
+    val Caution = listOf(Amber, Coral)
+    fun spectrumBrush() = Brush.linearGradient(Spectrum)
+    fun cautionBrush() = Brush.linearGradient(Caution)
 }
