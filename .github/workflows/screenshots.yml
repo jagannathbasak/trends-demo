@@ -1,0 +1,44 @@
+name: Update screenshots
+
+# Renders every screen with Robolectric and commits the PNGs to docs/screenshots
+# on the branch it runs against. Run it by hand after visual changes.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+      - uses: gradle/actions/setup-gradle@v4
+      - name: Render screens
+        run: ./gradlew --no-daemon testDebugUnitTest --tests "com.nvile.app.ScreenshotTest"
+      - name: Downscale for the repository
+        run: |
+          mkdir -p docs/screenshots
+          python3 -m pip install --quiet pillow
+          python3 - <<'PY'
+          import glob, os
+          from PIL import Image
+          for f in sorted(glob.glob("app/build/screenshots/*.png")):
+              im = Image.open(f).convert("RGB")
+              w = 540
+              im = im.resize((w, int(im.height * w / im.width)), Image.LANCZOS)
+              im.save(os.path.join("docs/screenshots", os.path.basename(f)[:-4] + ".jpg"), quality=86, optimize=True)
+          PY
+      - name: Commit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/screenshots
+          git diff --cached --quiet && exit 0
+          git commit -m "Update screenshots"
+          git push
