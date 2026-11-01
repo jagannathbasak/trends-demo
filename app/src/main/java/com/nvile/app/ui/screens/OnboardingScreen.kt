@@ -152,7 +152,7 @@ private fun RoleStep(role: Role, onPick: (Role) -> Unit) {
         Spacer(Modifier.height(36.dp))
         Role.entries.forEachIndexed { i, r ->
             val on = r == role
-            val color by animateColorAsState(if (on) Nv.Text else Nv.Text4, tween(300), label = "role")
+            val color by animateColorAsState(if (on) Nv.Text else Nv.Text3, tween(300), label = "role")
             val shift by animateDpAsState(if (on) 14.dp else 0.dp, NvMotion.press(), label = "shift")
             Column(
                 Modifier

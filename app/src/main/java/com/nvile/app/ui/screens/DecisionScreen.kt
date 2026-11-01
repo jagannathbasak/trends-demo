@@ -106,7 +106,7 @@ fun DecisionScreen(vm: NvileViewModel, marketId: String, onClose: () -> Unit) {
             Row(Modifier.fillMaxWidth().padding(top = 14.dp), verticalAlignment = Alignment.CenterVertically) {
                 Column(Modifier.weight(1f)) {
                     Text(m.name, style = NvType.Headline)
-                    Text("Decision · ${m.scope.lowercase().replaceFirstChar { it.uppercase() }}", style = NvType.Caption)
+                    Text("Decision · ${m.scope}", style = NvType.Caption)
                 }
                 RoundButton(NvIcons.Close, "Close", onClose, size = 40.dp)
             }

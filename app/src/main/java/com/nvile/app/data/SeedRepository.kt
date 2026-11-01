@@ -29,7 +29,7 @@ object SeedRepository : NvileRepository {
     private val aiWorkflow = Market(
         id = "ai-workflow",
         name = "AI Workflow Platforms",
-        scope = "DACH MID-MARKET",
+        scope = "DACH mid-market",
         stage = Stage.TREND,
         momentum = "ACCELERATING",
         probability = 87,
@@ -74,7 +74,7 @@ object SeedRepository : NvileRepository {
     private val energy = Market(
         id = "energy-storage",
         name = "Industrial Energy Storage",
-        scope = "EU INDUSTRIAL",
+        scope = "EU industrial",
         stage = Stage.EMERGING,
         momentum = "BUILDING",
         probability = 72,
@@ -110,7 +110,7 @@ object SeedRepository : NvileRepository {
     private val clinical = Market(
         id = "clinical-ai",
         name = "Clinical Documentation AI",
-        scope = "US HOSPITALS",
+        scope = "US hospitals",
         stage = Stage.TREND,
         momentum = "SLOWING",
         probability = 48,
@@ -146,7 +146,7 @@ object SeedRepository : NvileRepository {
     private val packaging = Market(
         id = "circular-packaging",
         name = "Circular Packaging",
-        scope = "EU CONSUMER GOODS",
+        scope = "EU consumer goods",
         stage = Stage.WEAK_SIGNAL,
         momentum = "EARLY",
         probability = 61,

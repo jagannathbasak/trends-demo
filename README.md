@@ -6,39 +6,41 @@ know when to act. Every figure carries its evidence class: ● Verified, ◦ Sig
 
 Built with Kotlin and Jetpack Compose. Screens follow the **NVILE Mobile App** design canvas.
 
-## Screens
+## Experience
 
-| Tab | Screens |
+| Tab | What it does |
 | --- | --- |
-| Welcome | Animated hero forecast, word-by-word headline, early access / sign in |
-| Onboarding | Role picker, market tracking (up to 10) |
-| Today | Daily brief, verdict-moved banner, tracked markets with sparklines, top catalyst, track record |
-| Signals | Search and stage filters, ranked opportunity cards → Market detail → Why it is moving → Decision Center |
-| Ask | Question composer with Standard/Deep depth, suggestions → staged analysis → verdict answer |
-| Ideas | Score an idea (buyer, regions, horizon) → score ring, verdict, 8-part Opportunity Report |
-| You | Plan, integrations, alerts, track record, sign out |
+| Welcome | A living orb, an editorial headline, one clear action |
+| Onboarding | Pick what you decide, tap a floating constellation of markets, watch the orb tune your brief |
+| Pulse | Cinematic "verdict moved" card, a swipeable carousel of your markets, the signal of the day |
+| Markets | Stocks-style ranked list with spectrum value pills |
+| Market | Giant numeral that follows your finger as you scrub a full-bleed forecast with a probability fog; the call, scenarios, drivers, risks |
+| Decision | Four full-screen chapters, told like a story: what is happening, why, what next, what to do |
+| Ask (orb) | A conversation: the orb rises and swirls while it thinks, then answers with a serif verdict |
+| Ideas | Write an idea in big type, get a watch-style score dial and an 8-part report |
+| You | Tilting membership card, plan, integrations, Apple-style grouped settings |
 
 ## Screenshots
 
 Rendered on the JVM by `ScreenshotTest` (Robolectric + Roborazzi). Refresh them by running the
 **Update screenshots** workflow.
 
-| Welcome | Today | Signal board | Market detail |
+| Welcome | Pulse | Market (scrub the forecast) | Decision story |
 | --- | --- | --- | --- |
-| <img src="docs/screenshots/01-welcome.jpg" width="200"> | <img src="docs/screenshots/03-today.jpg" width="200"> | <img src="docs/screenshots/04-signals.jpg" width="200"> | <img src="docs/screenshots/05-market.jpg" width="200"> |
-| **Decision Center** | **Ask** | **Idea score** | **You** |
-| <img src="docs/screenshots/07-decision.jpg" width="200"> | <img src="docs/screenshots/08-ask.jpg" width="200"> | <img src="docs/screenshots/11-idea-result.jpg" width="200"> | <img src="docs/screenshots/14-profile.jpg" width="200"> |
+| <img src="docs/screenshots/01-welcome.jpg" width="200"> | <img src="docs/screenshots/03-pulse.jpg" width="200"> | <img src="docs/screenshots/05-market.jpg" width="200"> | <img src="docs/screenshots/06-decision.jpg" width="200"> |
+| **Ask** | **Markets** | **Idea score** | **You** |
+| <img src="docs/screenshots/07-ask.jpg" width="200"> | <img src="docs/screenshots/04-markets.jpg" width="200"> | <img src="docs/screenshots/09-idea-result.jpg" width="200"> | <img src="docs/screenshots/12-you.jpg" width="200"> |
 
-## Design system
+## Design system: "Observatory"
 
-- **Ground:** near-black ink with a slow, drifting mint aurora (`AuroraBackground`).
-- **Surfaces:** frosted glass cards with a light-catching hairline rim (`GlassCard`).
-- **Type:** Space Grotesk (display and numerals), Instrument Sans (reading), IBM Plex Mono
-  (labels and evidence marks). All bundled under the SIL Open Font License (`licenses/`).
-- **Colour:** one luminous mint accent (`#4FE3C1`) for momentum, amber (`#E0A94F`) for
-  verdicts under pressure.
-- **Motion:** spring physics throughout. Charts draw themselves, numbers count up and roll,
-  horizons morph the forecast curve, the tab bar capsule glides, controls give haptic ticks.
+- **Ground:** true black, with slow-drifting pools of light whose colour follows the market's mood.
+- **The Orb:** NVILE's signature. A fluid-noise AGSL shader on Android 13+ (layered-gradient fallback below).
+- **Type:** Geist for the interface with hairline giant numerals, Instrument Serif italic for verdicts,
+  Geist Mono for data. All bundled under the SIL Open Font License (`licenses/`).
+- **Colour:** the prediction spectrum (mint, cyan, indigo) for momentum; the caution spectrum
+  (amber, coral) for calls under pressure.
+- **Motion and touch:** spring physics, haptic ticks while scrubbing and switching, staggered reveals,
+  self-drawing charts, counting numerals.
 
 Tokens live in `app/src/main/java/com/nvile/app/ui/theme`, components in `ui/components`.
 

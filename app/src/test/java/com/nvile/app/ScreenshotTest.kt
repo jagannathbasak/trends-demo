@@ -4,6 +4,11 @@ import android.app.Application
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.dp
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -55,6 +60,12 @@ class ScreenshotTest {
             NvileTheme {
                 Box(Modifier.fillMaxSize().background(Nv.Black)) {
                     content()
+                    if (tab >= 0 && tab != 2) {
+                        Box(
+                            Modifier.align(Alignment.BottomCenter).fillMaxWidth().height(150.dp)
+                                .background(Brush.verticalGradient(listOf(Color.Transparent, Nv.Black.copy(alpha = 0.85f), Nv.Black))),
+                        )
+                    }
                     if (tab >= 0) Box(Modifier.align(Alignment.BottomCenter)) { TabBar(AppTabs, tab, {}) }
                 }
             }

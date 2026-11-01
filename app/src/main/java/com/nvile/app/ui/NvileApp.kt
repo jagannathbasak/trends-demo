@@ -13,6 +13,11 @@ import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.dp
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -184,6 +189,21 @@ fun NvileApp(vm: NvileViewModel = viewModel()) {
                     },
                 )
             }
+        }
+
+        // Scrim so content fades out beneath the floating tab bar.
+        AnimatedVisibility(
+            visible = selected >= 0 && selected != 2,
+            modifier = Modifier.align(Alignment.BottomCenter),
+            enter = fadeIn(),
+            exit = fadeOut(),
+        ) {
+            Box(
+                Modifier
+                    .fillMaxWidth()
+                    .height(150.dp)
+                    .background(Brush.verticalGradient(listOf(Color.Transparent, Nv.Black.copy(alpha = 0.85f), Nv.Black))),
+            )
         }
 
         AnimatedVisibility(

@@ -80,7 +80,7 @@ fun MarketScreen(vm: NvileViewModel, marketId: String, onBack: () -> Unit, openD
     ) {
         Column(Modifier.padding(horizontal = 20.dp)) {
             Row(Modifier.reveal(0), verticalAlignment = Alignment.CenterVertically) {
-                DotLabel("${m.stage.label.lowercase().replaceFirstChar { it.uppercase() }} · ${m.momentum.lowercase()} · ${m.scope.lowercase().replaceFirstChar { it.uppercase() }}", accent, Modifier.weight(1f))
+                DotLabel("${m.stage.label.lowercase().replaceFirstChar { it.uppercase() }} · ${m.momentum.lowercase()} · ${m.scope}", accent, Modifier.weight(1f))
                 TogglePill(m.id in vm.tracked, "Watch", "Watching", { haptics.confirm(); vm.toggleTracked(m.id) })
             }
             Gap(18)
@@ -241,7 +241,7 @@ private fun EvidenceMix(m: Market) {
 
 fun shareMarket(context: Context, m: Market) {
     val f = m.m12
-    val text = "NVILE · ${m.name}\n12-month demand ${pct(f.demand)} (band ${pct(f.bandLow)} to ${pct(f.bandHigh)}, ${f.confidence}% confidence)\n" +
+    val text = "NVILE · ${m.name} (${m.scope})\n12-month demand ${pct(f.demand)} (band ${pct(f.bandLow)} to ${pct(f.bandHigh)}, ${f.confidence}% confidence)\n" +
         "Opportunity ${m.probability}% · window ${f.window}\nThe call: ${m.verdict}"
     val send = Intent(Intent.ACTION_SEND).apply {
         type = "text/plain"

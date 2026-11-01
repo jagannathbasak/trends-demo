@@ -220,7 +220,7 @@ fun TabBar(items: List<TabItem>, selected: Int, onSelect: (Int) -> Unit, modifie
                 .height(66.dp)
                 .shadow(30.dp, RoundedCornerShape(33.dp), ambientColor = Color.Black, spotColor = Color.Black)
                 .clip(RoundedCornerShape(33.dp))
-                .background(Color(0xE61A1A1F))
+                .background(Color(0xF7161619))
                 .border(0.5.dp, Brush.verticalGradient(listOf(Nv.white(0.22f), Nv.white(0.04f))), RoundedCornerShape(33.dp))
                 .padding(5.dp),
         ) {

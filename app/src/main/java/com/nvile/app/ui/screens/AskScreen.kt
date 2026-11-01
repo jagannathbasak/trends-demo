@@ -104,7 +104,7 @@ fun AskScreen(vm: NvileViewModel, openMarket: (String) -> Unit, openDecision: (S
     }
 
     val empty = history.isEmpty()
-    val orbSize by animateDpAsState(if (empty) 250.dp else 96.dp, tween(900, easing = com.nvile.app.ui.theme.NvMotion.Ease), label = "orb")
+    val orbSize by animateDpAsState(if (empty) 200.dp else 96.dp, tween(900, easing = com.nvile.app.ui.theme.NvMotion.Ease), label = "orb")
 
     Box(Modifier.fillMaxSize()) {
         Atmosphere(if (thinking) Mood.Rising else Mood.Night, strength = if (empty) 0.8f else 0.5f)
@@ -123,7 +123,7 @@ fun AskScreen(vm: NvileViewModel, openMarket: (String) -> Unit, openDecision: (S
                 Gap(6)
                 Text("What do you want\nto know?", style = NvType.Verdict.copy(fontSize = 40.sp, lineHeight = 44.sp, textAlign = TextAlign.Center), modifier = Modifier.reveal(2))
                 Gap(30)
-                vm.repo.suggestions().forEachIndexed { i, s ->
+                vm.repo.suggestions().take(4).forEachIndexed { i, s ->
                     Row(
                         Modifier
                             .fillMaxWidth()
@@ -135,7 +135,7 @@ fun AskScreen(vm: NvileViewModel, openMarket: (String) -> Unit, openDecision: (S
                         Text(s, style = NvType.BodyStrong.copy(fontSize = 17.sp, fontWeight = androidx.compose.ui.text.font.FontWeight.Normal), modifier = Modifier.weight(1f))
                         NvIcon(NvIcons.Arrow, Nv.Text3, size = 18.dp)
                     }
-                    if (i < vm.repo.suggestions().lastIndex) Hairline()
+                    if (i < 3) Hairline()
                 }
             } else {
                 Gap(18)
