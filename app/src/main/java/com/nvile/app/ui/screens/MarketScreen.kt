@@ -121,7 +121,7 @@ fun MarketScreen(
 
         Gap(12)
         Row(Modifier.fillMaxWidth().reveal(3), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-            MetricTile("OPPORTUNITY PROB. ◈", "${m.probability}%", Modifier.weight(1f), highlight = accent)
+            MetricTile("OPPORTUNITY ◈", "${m.probability}%", Modifier.weight(1f), highlight = accent)
             MetricTile("COMPETITION ◈", pct(f.competition), Modifier.weight(1f))
         }
         Gap(12)

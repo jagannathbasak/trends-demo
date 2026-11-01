@@ -40,7 +40,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
@@ -85,17 +85,7 @@ fun PrimaryButton(
             .fillMaxWidth()
             .heightIn(min = 56.dp)
             .tappable(enabled = enabled, onClick = onClick)
-            .drawBehind {
-                drawRoundRect(
-                    brush = Brush.radialGradient(
-                        listOf(Nv.mint(0.35f * alpha), Color.Transparent),
-                        center = Offset(size.width / 2, size.height * 0.9f), radius = size.width * 0.55f,
-                    ),
-                    topLeft = Offset(-24f, size.height * 0.2f),
-                    size = androidx.compose.ui.geometry.Size(size.width + 48f, size.height * 1.2f),
-                    cornerRadius = CornerRadius(80f),
-                )
-            }
+            .shadow(22.dp, ButtonShape, ambientColor = Nv.Mint, spotColor = Nv.Mint)
             .clip(ButtonShape)
             .background(Brush.verticalGradient(listOf(Nv.MintBright.copy(alpha = alpha), Nv.Mint.copy(alpha = alpha))))
             .padding(horizontal = 20.dp),

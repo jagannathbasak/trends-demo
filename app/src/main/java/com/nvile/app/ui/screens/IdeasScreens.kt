@@ -37,6 +37,7 @@ import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import android.content.Intent
 import com.nvile.app.data.Horizon
@@ -174,7 +175,7 @@ fun IdeaResultScreen(vm: NvileViewModel, onBack: () -> Unit, openMarket: (String
         Gap(24)
         Row(Modifier.fillMaxWidth().reveal(3), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
             ScoreStat("DEMAND", pct(f.demand), if (f.demand > 0.3) "rising" else "flat", Modifier.weight(1f))
-            ScoreStat("COMPETITION", pct(f.competition), if (f.competition > 0.25) "moderate → high" else "moderate", Modifier.weight(1f))
+            ScoreStat("COMPETITION", pct(f.competition), if (f.competition > 0.25) "rising fast" else "moderate", Modifier.weight(1f))
             ScoreStat("CONFIDENCE", "${f.confidence}%", "band ±${(f.bandHigh - f.bandLow).times(50).toInt()} pts", Modifier.weight(1f))
         }
         Gap(14)
@@ -259,7 +260,7 @@ private fun ScoreStat(label: String, value: String, note: String, modifier: Modi
             .border(1.dp, Nv.Hairline, shape)
             .padding(14.dp),
     ) {
-        Eyebrow(label)
+        Text(label, style = NvType.Eyebrow.copy(fontSize = 9.sp, letterSpacing = 0.06.em), maxLines = 1)
         Gap(8)
         Text(value, style = NvType.Number.copy(fontSize = 20.sp))
         Gap(2)

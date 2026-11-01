@@ -43,15 +43,21 @@ import kotlin.math.sin
 
 /* ------------------------------------------------------------- helpers */
 
-/** Smooth path through points using horizontal-tangent cubic segments. */
-private fun smoothPath(points: List<Offset>, path: Path = Path()): Path {
-    path.reset()
+/** Smooth path through points (Catmull-Rom converted to cubic Béziers). */
+private fun smoothPath(points: List<Offset>, path: Path = Path(), continuePath: Boolean = false): Path {
+    if (!continuePath) path.reset()
     if (points.isEmpty()) return path
-    path.moveTo(points[0].x, points[0].y)
-    for (i in 1 until points.size) {
-        val a = points[i - 1]; val b = points[i]
-        val mx = (a.x + b.x) / 2f
-        path.cubicTo(mx, a.y, mx, b.y, b.x, b.y)
+    if (continuePath) path.lineTo(points[0].x, points[0].y) else path.moveTo(points[0].x, points[0].y)
+    for (i in 0 until points.size - 1) {
+        val p0 = points[(i - 1).coerceAtLeast(0)]
+        val p1 = points[i]
+        val p2 = points[i + 1]
+        val p3 = points[(i + 2).coerceAtMost(points.size - 1)]
+        path.cubicTo(
+            p1.x + (p2.x - p0.x) / 6f, p1.y + (p2.y - p0.y) / 6f,
+            p2.x - (p3.x - p1.x) / 6f, p2.y - (p3.y - p1.y) / 6f,
+            p2.x, p2.y,
+        )
     }
     return path
 }
@@ -162,9 +168,7 @@ fun ForecastChart(
         val fcProgress = ((draw - 0.5f) / 0.5f).coerceIn(0f, 1f)
         if (fcProgress > 0f) {
             val band = smoothPath(hiPts)
-            val lowRev = smoothPath(loPts.reversed())
-            band.lineTo(loPts.last().x, loPts.last().y)
-            band.addPath(lowRev)
+            smoothPath(loPts.reversed(), band, continuePath = true)
             band.close()
             drawPath(
                 band,
