@@ -33,7 +33,7 @@ val Sans = FontFamily(
 )
 
 /** IBM Plex Mono: labels, metadata, evidence marks. */
-val Mono = FontFamily(
+val PlexMono = FontFamily(
     Font(R.font.plex_mono_regular, FontWeight.Normal),
     Font(R.font.plex_mono_medium, FontWeight.Medium),
 )
@@ -54,7 +54,7 @@ object NvType {
     val Button = TextStyle(fontFamily = Sans, fontWeight = FontWeight.SemiBold, fontSize = 16.sp, letterSpacing = 0.005.em)
     val TabLabel = TextStyle(fontFamily = Sans, fontWeight = FontWeight.Medium, fontSize = 10.5.sp)
 
-    val Eyebrow = TextStyle(fontFamily = Mono, fontWeight = FontWeight.Medium, fontSize = 10.5.sp, letterSpacing = 0.12.em, color = Nv.Text3)
-    val Mono = TextStyle(fontFamily = com.nvile.app.ui.theme.Mono, fontWeight = FontWeight.Normal, fontSize = 12.sp, color = Nv.Text3)
-    val MonoTag = TextStyle(fontFamily = com.nvile.app.ui.theme.Mono, fontWeight = FontWeight.Medium, fontSize = 9.5.sp, letterSpacing = 0.1.em)
+    val Eyebrow = TextStyle(fontFamily = PlexMono, fontWeight = FontWeight.Medium, fontSize = 10.5.sp, letterSpacing = 0.12.em, color = Nv.Text3)
+    val Mono = TextStyle(fontFamily = PlexMono, fontWeight = FontWeight.Normal, fontSize = 12.sp, color = Nv.Text3)
+    val MonoTag = TextStyle(fontFamily = PlexMono, fontWeight = FontWeight.Medium, fontSize = 9.5.sp, letterSpacing = 0.1.em)
 }

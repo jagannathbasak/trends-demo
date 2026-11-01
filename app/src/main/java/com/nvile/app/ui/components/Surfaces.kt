@@ -31,6 +31,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.composed
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
@@ -107,7 +108,7 @@ fun AuroraBackground(modifier: Modifier = Modifier, intensity: Float = 1f) {
 fun Modifier.pressable(
     interaction: MutableInteractionSource,
     pressedScale: Float = 0.965f,
-): Modifier = androidx.compose.ui.composed {
+): Modifier = composed {
     val pressed by interaction.collectIsPressedAsState()
     val scale by animateFloatAsState(if (pressed) pressedScale else 1f, NvMotion.press(), label = "press")
     this.graphicsLayer { scaleX = scale; scaleY = scale }
@@ -119,7 +120,7 @@ fun Modifier.tappable(
     pressedScale: Float = 0.965f,
     role: Role = Role.Button,
     onClick: () -> Unit,
-): Modifier = androidx.compose.ui.composed {
+): Modifier = composed {
     val interaction = remember { MutableInteractionSource() }
     val haptics = rememberHaptics()
     this
@@ -132,7 +133,7 @@ fun Modifier.tappable(
 /* -------------------------------------------------------------- Reveal */
 
 /** Staggered entrance: content rises 28dp and fades in on a soft spring. */
-fun Modifier.reveal(index: Int = 0, delayMs: Long = 70L): Modifier = androidx.compose.ui.composed {
+fun Modifier.reveal(index: Int = 0, delayMs: Long = 70L): Modifier = composed {
     val anim = remember { Animatable(0f) }
     LaunchedEffect(Unit) {
         delay(index * delayMs)
