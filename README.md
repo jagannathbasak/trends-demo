@@ -18,6 +18,17 @@ Built with Kotlin and Jetpack Compose. Screens follow the **NVILE Mobile App** d
 | Ideas | Score an idea (buyer, regions, horizon) → score ring, verdict, 8-part Opportunity Report |
 | You | Plan, integrations, alerts, track record, sign out |
 
+## Screenshots
+
+Rendered on the JVM by `ScreenshotTest` (Robolectric + Roborazzi). Refresh them by running the
+**Update screenshots** workflow.
+
+| Welcome | Today | Signal board | Market detail |
+| --- | --- | --- | --- |
+| <img src="docs/screenshots/01-welcome.jpg" width="200"> | <img src="docs/screenshots/03-today.jpg" width="200"> | <img src="docs/screenshots/04-signals.jpg" width="200"> | <img src="docs/screenshots/05-market.jpg" width="200"> |
+| **Decision Center** | **Ask** | **Idea score** | **You** |
+| <img src="docs/screenshots/07-decision.jpg" width="200"> | <img src="docs/screenshots/08-ask.jpg" width="200"> | <img src="docs/screenshots/11-idea-result.jpg" width="200"> | <img src="docs/screenshots/14-profile.jpg" width="200"> |
+
 ## Design system
 
 - **Ground:** near-black ink with a slow, drifting mint aurora (`AuroraBackground`).
